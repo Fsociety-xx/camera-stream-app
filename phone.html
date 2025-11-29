@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Камера телефона</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #000; }
+        video { width: 100%; border: 2px solid red; }
+    </style>
+</head>
+<body>
+    <video id="video" autoplay playsinline></video>
+    <div style="color: white; text-align: center;">Камера активна - трансляция идет</div>
+
+    <script>
+        const video = document.getElementById('video');
+        
+        navigator.mediaDevices.getUserMedia({ 
+            video: { width: 1280, height: 720, facingMode: 'environment' } 
+        }).then(stream => {
+            video.srcObject = stream;
+            
+            setInterval(() => {
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0);
+                
+                const imageData = canvas.toDataURL('image/jpeg', 0.7);
+                localStorage.setItem('cameraStream', imageData);
+            }, 100);
+        }).catch(err => {
+            document.body.innerHTML = '<h1 style="color:red">Ошибка доступа к камере</h1>';
+        });
+    </script>
+</body>
+</html>
