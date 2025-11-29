@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Просмотр трансляции</title>
+    <style>
+        body { margin: 0; padding: 0; background: #111; }
+        #streamView { 
+            width: 100vw; height: 100vh; 
+            object-fit: contain; background: black;
+        }
+        .status {
+            position: fixed; top: 10px; left: 10px;
+            background: rgba(0,255,0,0.8); padding: 10px;
+            border-radius: 5px; font-family: Arial; z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="status" id="status">Ожидание трансляции...</div>
+    <img id="streamView" src="" alt="Трансляция">
+
+    <script>
+        const imgElement = document.getElementById('streamView');
+        const statusElement = document.getElementById('status');
+        let lastUpdate = Date.now();
+
+        setInterval(() => {
+            const streamData = localStorage.getItem('cameraStream');
+            
+            if (streamData) {
+                imgElement.src = streamData;
+                statusElement.textContent = ТРАНСЛЯЦИЯ АКТИВНА | ${new Date().toLocaleTimeString()};
+                statusElement.style.background = 'rgba(0,255,0,0.8)';
+                lastUpdate = Date.now();
+            } else {
+                if (Date.now() - lastUpdate > 5000) {
+                    statusElement.textContent = 'ТРАНСЛЯЦИЯ ПРЕРВАНА';
+                    statusElement.style.background = 'rgba(255,0,0,0.8)';
+                }
+            }
+        }, 50);
+    </script>
+</body>
+</html>
